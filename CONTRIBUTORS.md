@@ -11,4 +11,4 @@ Please follow this template:
 
 -> Angelo Diepe | https://github.com/angelo-diepe/ | https://angelodiepe.pythonanywhere.com/ | @Angelo#6931
 
--> Gaetan Mopi | https://github.com/Gaetan-M/ | @Le louche#8808
+-> Gaetan MOPI | https://github.com/Gaetan-M/ | @Le louche#8808
