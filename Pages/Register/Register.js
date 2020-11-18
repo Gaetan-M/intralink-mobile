@@ -6,20 +6,24 @@ import {Groupe,Inputs,Plateform,Filieres,Formation,Niveau,Departements,Niveau3} 
 import RNPickerSelect from 'react-native-picker-select';
 const {width,height}=Dimensions.get('screen')
  let passw=false
+ let email=''
 class Register extends React.Component{
 	constructor(){
 		super();
 		this.state={
+			Select1:[],
+			Select2:[],
+			Select3:[],
 			Name:'',
 			Surname:'',
 			Email:'',
 			Phone:0,
 			Password:'',
-			Select1:[],
-			Select2:[],
-			Select3:[],
+			Confirm:'',
 			Niveau:'',
 			Formation:'',
+			Plateform:'',
+			Groupe:'',
 			value:'',
 			PersonnalPage:true,
 			passw:false
@@ -27,6 +31,43 @@ class Register extends React.Component{
 		}
 	}
 
+
+signup(){
+
+  const {Email,Password,Plateform,Formation,Filieres,Niveau,Name,Surname}=this.state
+  console.log(Email.includes('@gmail.com'))
+  if  (Password===''||Email===''||Plateform===''||Filieres===''||Name===''||Surname===''||Phone==='')
+  {
+    alert('empty fied detect')
+  } 
+  else if(Email.includes('@gmail.com')===false&&Email.includes('@yahoo.fr')==false&&Email.includes('@outlook.com')==false)
+    {
+      alert('email is not correct')
+    }
+  else if(this.state.Password!=this.state.Confirm){
+  	alert('error with Password')
+  }else{
+    fetch('http://localhost:3001/Register',{
+      method:'post',
+      headers:{'content-type':'application/json'},
+      body:JSON.stringify({
+        Password:this.state.Password,
+        Email:this.state.Email,
+        Plateform:this.state.Plateform,
+        Filieres:this.state.Filieres,
+        Niveau:this.state.Niveau,
+        Name:this.state.Name,
+        Surname:this.state.Surname,
+        Phone:this.state.Phone,
+
+      })
+    })
+    .then(response=>response.json())
+    .then(message=>console.log(message))
+    .catch(error=>console.log(error))
+    this.execute(); 
+  }  
+}
 displayPersonnalInformations(){
 
 
@@ -50,7 +91,8 @@ displayPersonnalInformations(){
 			                source={require('../../assets/email.png')}
 			              />    
 			              <TextInput style={styles.input}
-			              secureTextEntry={passw}
+			              onChangeText={(value)=>{input.value=value}}
+			                secureTextEntry={passw}
 			                placeholder={input.name}
 			                >
 			              </TextInput>
@@ -75,7 +117,10 @@ displayPersonnalInformations(){
 		              	justifyContent:"flex-end",
 		              	width:100,
 		              }}
-		              onPress={()=>this.setState({PersonnalPage:false})}
+		              onPress={()=>{
+		              	Inputs.map((input,index)=>{
+		              		console.log(input)})
+		              	this.setState({PersonnalPage:false})}}
 		            >
 		            	<Text style={{fontSize:25,marginTop:-5}}>Next</Text>
 			            <Image style={{height:30,width:30,marginLeft:10}}
@@ -94,14 +139,13 @@ displayAcademicInformations(){
        	<View style={{borderWidth:1,width:width-100,borderRadius:10,marginTop:20}}>
 		<RNPickerSelect
 		            onValueChange={ (value) => {
-					    	this.setState({Plateform:value})
 					    	console.log(this.state.Filieres)
 					        switch(value){        	
 					        	case "3":
-					        	return this.setState({Select1:Departements})
+					        	return this.setState({Select1:Departements,Niveau:value})
 					        	break;
 					        	default:
-					        	return this.setState({Select1:Formation})
+					        	return this.setState({Select1:Formation,Niveau:value})
 					        }
 
 		            }}
@@ -113,13 +157,13 @@ displayAcademicInformations(){
 		            onValueChange={ (value) => {
 					        switch(value){
 					        	case "GI":
-					        	return this.setState({Select2:Niveau3.GI,Select3:Groupe})
+					        	return this.setState({Select2:Niveau3.GI,Select3:Groupe,Departements:value})
 					        	break;  
 					        	case "1":
-					        	return this.setState({Select2:Plateform})
+					        	return this.setState({Select2:Plateform,Formation:value})
 					        	break;        	
 					        	case "2":
-					        	return this.setState({Select2:Plateform})
+					        	return this.setState({Select2:Plateform,Formation:value})
 					        	break;        	      	
 					        	default:console.log('error')
 					        }
@@ -134,17 +178,16 @@ displayAcademicInformations(){
 		            onValueChange={ (value) => {
 					         switch(value){
 					         	case "PFTIN":
-					        	return this.setState({Select3:Filieres.PFTIN})
+					        	return this.setState({Select3:Filieres.PFTIN,Plateform:value})
 					         	break;        	
 					         	case "PFTI":
-					         	return this.setState({Select3:Filieres.PFTI})
+					         	return this.setState({Select3:Filieres.PFTI,Plateform:value})
 					         	break;        	
 					         	case "PFTT":
-					        	return this.setState({Select3:Filieres.PFTT})
+					        	return this.setState({Select3:Filieres.PFTT,Plateform:value})
 					         	break;					        
 					         	default:console.log('error')
 					         }
-					        // console.log(this.state.Filieres)
 
 		            }}
 		            items={this.state.Select2}
@@ -154,9 +197,9 @@ displayAcademicInformations(){
         <View style={{borderWidth:1,width:width-100,borderRadius:10,marginTop:20}}>		
        <RNPickerSelect
 		            onValueChange={ (value) => {
-					    	// this.setState({Plateform:value})
-
-		            }}
+		            	if(this.state.Niveau===3)
+		            	this.setState({Groupe:value})
+		            	this.setState({Filieres:value})}}
 		            items={this.state.Select3}
 		            style={{borderWidth:10}}
 		        />
@@ -172,7 +215,7 @@ displayAcademicInformations(){
                       height:50,
                       display:this.state.display
                         }}
-                             onPress={()=>this.props.navigation.navigate('Main')}
+                             onPress={()=>console.log(this.state)}
                            >
                         <Text style={{textAlign:'center',color:'white'}}>Sign Up</Text>     
             </TouchableOpacity>  

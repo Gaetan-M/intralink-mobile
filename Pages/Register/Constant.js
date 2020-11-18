@@ -60,25 +60,31 @@ export const Groupe=[
 export const Inputs=[
 	{
 		name:"Name",
-		logo:''
+		logo:'',
+		value:''
 	},	
 	{
 		name:"Surname",
-		logo:''
+		logo:'',
+		value:''
 	},	
 	{
 		name:"Email",
-		logo:''
+		logo:'',
+		value:''
 	},	
 	{
 		name:"Phone",
-		logo:''
+		logo:'',
+		value:''
 	},	
 	{
 		name:"Password",
-		logo:''
+		logo:'',
+		value:''
 	},	
 	{
 		name:"Confirm_Password",
-		logo:''
+		logo:'',
+		value:''
 	}];

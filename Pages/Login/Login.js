@@ -15,35 +15,42 @@ class Login extends React.Component{
         checked:false,
         display:'flex',
         Email:'',
-        Password:'',
-        phone:''
+        Password:''
       }
   }
-  checkEmail(){
-    console.log(this.state.email)  
-    if(this.state.Email.includes('@gmail.com')==true)
-      console.log('ok')
-  }
+signup(){
+
+  const {Email,Password}=this.state
+  console.log(Email.includes('@gmail.com'))
+  if  (Password===''||Email==='')
+  {
+    alert('empty fied detect')
+  } 
+  else if(Email.includes('@gmail.com')===false&&Email.includes('@yahoo.fr')==false&&Email.includes('@outlook.com')==false)
+    {
+      alert('email is not correct')
+    }
+  else{
+    fetch('http://localhost:3001/Login',{
+      method:'post',
+      headers:{'content-type':'application/json'},
+      body:JSON.stringify({
+        Password:this.state.Password,
+        Email:this.state.Email,
+        Checked:this.state.checked
+      })
+    })
+    .then(response=>response.json())
+    .then(message=>console.log(message))
+    .catch(error=>console.log(error))
+    this.execute(); 
+  }  
+}
+
   execute(){
     this.props.navigation.navigate('Main')
   }
-  onInputChange(e,value){
-
-    switch(value)
-    {
-      case "email":
-      return this.setState({email:e.target.value})
-      break;      
-      case "phone":
-      return this.setState({phone:e.target.value})
-      break;      
-      case "password":
-      return this.setState({password:e.target.value})
-      break;
-    }
-    this.setState({value:e.target.value})
-     console.log(this.state.email)
-  }
+  
   render(){
   
   	return(
@@ -74,6 +81,7 @@ class Login extends React.Component{
               <TextInput style={styles.input}
               placeholder='Password'
               onChangeText={(value)=>this.setState({Password:value})}
+              secureTextEntry={true}
               ></TextInput>         
             </View>
 
@@ -88,9 +96,7 @@ class Login extends React.Component{
                       height:50,
                       display:this.state.display
                         }}
-                              onPress={()=>{
-                                this.checkEmail()
-                                this.execute()}}
+                              onPress={()=>this.signup()}
                            >
                         <Text style={{textAlign:'center',color:'white'}}>Login</Text>     
             </TouchableOpacity>  
